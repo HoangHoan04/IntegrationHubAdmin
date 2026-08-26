@@ -1,0 +1,63 @@
+<app-filter-custom
+  [id]="'webhooks-filter'"
+  [fields]="filterFields"
+  [filters]="filters"
+  [config]="filterConfig"
+  [filterActions]="filterActions"
+  [loading]="loading"
+  (filtersChange)="onFiltersChange($event)"
+></app-filter-custom>
+
+<app-table-custom
+  [id]="'webhooks-table'"
+  [data]="data"
+  [columns]="columns"
+  [loading]="loading"
+  [showIndexList]="true"
+  [stripedRows]="true"
+  [rowActions]="rowActions"
+  [pagination]="pagination"
+  [toolbar]="toolbar"
+  [toolbarActions]="toolbarActions"
+  (pageChange)="onPageChange($event)"
+  (sortChange)="onSortChange($event)"
+  (refresh)="loadData()"
+></app-table-custom>
+
+<!-- Detail Drawer -->
+<nz-drawer
+  [nzVisible]="drawerVisible"
+  nzTitle="Chi tiết Webhook Inbound (IPN)"
+  nzWidth="720px"
+  (nzOnClose)="drawerVisible = false"
+>
+  <ng-container *nzDrawerContent>
+    <div *ngIf="selectedLog">
+      <nz-descriptions nzBordered nzSize="small" [nzColumn]="2">
+        <nz-descriptions-item nzTitle="Log ID" [nzSpan]="2"><code>{{ selectedLog.id }}</code></nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Provider"><nz-tag nzColor="purple">{{ selectedLog.providerCode }}</nz-tag></nz-descriptions-item>
+        <nz-descriptions-item nzTitle="HTTP Method"><nz-tag [nzColor]="getMethodColor(selectedLog.httpMethod)">{{ selectedLog.httpMethod }}</nz-tag></nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Chữ ký (Signature)">
+          <nz-tag [nzColor]="selectedLog.isSignatureValid ? 'success' : 'error'">{{ selectedLog.isSignatureValid ? 'Hợp lệ' : 'Không hợp lệ' }}</nz-tag>
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Đã xử lý">
+          <nz-tag [nzColor]="selectedLog.isProcessed ? 'success' : 'warning'">{{ selectedLog.isProcessed ? 'Đã xử lý' : 'Chưa xử lý' }}</nz-tag>
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Client IP">{{ selectedLog.clientIp || 'N/A' }}</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Thời gian nhận">{{ selectedLog.createdAt | date:'dd/MM/yyyy HH:mm:ss' }}</nz-descriptions-item>
+        <nz-descriptions-item *ngIf="selectedLog.errorMessage" nzTitle="Lỗi" [nzSpan]="2">
+          <span style="color:#ff4d4f;">{{ selectedLog.errorMessage }}</span>
+        </nz-descriptions-item>
+      </nz-descriptions>
+
+      <nz-divider nzText="Request Headers" nzOrientation="left"></nz-divider>
+      <pre style="background: #f8fafc; padding: 12px; border-radius: 6px; font-size: 12px; max-height: 200px; overflow: auto;">{{ formatJson(selectedLog.headersJson) }}</pre>
+
+      <nz-divider nzText="Request Query Params" nzOrientation="left"></nz-divider>
+      <pre style="background: #f8fafc; padding: 12px; border-radius: 6px; font-size: 12px; max-height: 150px; overflow: auto;">{{ formatJson(selectedLog.queryParamsJson) }}</pre>
+
+      <nz-divider nzText="Body Payload" nzOrientation="left"></nz-divider>
+      <pre style="background: #f8fafc; padding: 12px; border-radius: 6px; font-size: 12px; max-height: 250px; overflow: auto;">{{ formatJson(selectedLog.bodyPayload) }}</pre>
+    </div>
+  </ng-container>
+</nz-drawer>

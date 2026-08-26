@@ -1,0 +1,41 @@
+<div class="adapters-container">
+  <div class="page-header">
+    <div>
+      <h2>Danh Mục Adapter Kết Nối</h2>
+      <p class="subtitle">Các đối tác tích hợp được hệ thống hỗ trợ sẵn — mỗi adapter có cấu trúc chuẩn hóa riêng</p>
+    </div>
+  </div>
+
+  <nz-spin [nzSpinning]="loading">
+    <div class="adapters-grid">
+      <div class="adapter-card" *ngFor="let adapter of adapters">
+        <div class="adapter-header" [style.borderLeftColor]="getProviderColor(adapter.providerCode)">
+          <div class="adapter-icon">{{ adapter.icon || getProviderIcon(adapter.providerCode) }}</div>
+          <div class="adapter-meta">
+            <div class="adapter-name">{{ adapter.displayName }}</div>
+            <nz-tag [nzColor]="'default'" class="adapter-code">{{ adapter.providerCode }}</nz-tag>
+          </div>
+        </div>
+
+        <p class="adapter-desc">{{ adapter.description }}</p>
+
+        <nz-divider nzText="Sự kiện hỗ trợ" nzOrientation="left" nzDashed></nz-divider>
+
+        <div class="capabilities">
+          <div class="cap-item" *ngFor="let evt of adapter.supportedEventTypes">
+            <span nz-icon nzType="check-circle" nzTheme="fill" style="color: #52c41a;"></span>
+            <span>{{ evt }}</span>
+          </div>
+        </div>
+
+        <nz-divider nzText="Thông tin xác thực yêu cầu" nzOrientation="left" nzDashed></nz-divider>
+
+        <div class="required-fields">
+          <nz-tag *ngFor="let field of adapter.requiredCredentialFields" nzColor="blue">
+            {{ field.label || field.key }} ({{ field.type }})
+          </nz-tag>
+        </div>
+      </div>
+    </div>
+  </nz-spin>
+</div>

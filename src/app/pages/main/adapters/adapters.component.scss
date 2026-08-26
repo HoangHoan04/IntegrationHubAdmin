@@ -1,0 +1,77 @@
+.adapters-container { padding: 24px; }
+
+.page-header {
+  margin-bottom: 28px;
+  h2 { margin: 0 0 4px; font-size: 22px; font-weight: 700; color: #1a1a2e; }
+  .subtitle { color: #888; font-size: 13px; margin: 0; }
+}
+
+.adapters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 20px;
+}
+
+.adapter-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+    transform: translateY(-2px);
+  }
+}
+
+.adapter-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-left: 4px solid #888;
+  padding-left: 16px;
+  margin-bottom: 16px;
+}
+
+.adapter-icon { font-size: 32px; line-height: 1; }
+
+.adapter-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 4px;
+}
+
+.adapter-code {
+  font-size: 11px;
+  font-family: monospace;
+}
+
+.adapter-desc {
+  color: #666;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
+.capabilities {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.cap-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #444;
+}
+
+.required-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}

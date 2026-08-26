@@ -1,0 +1,59 @@
+<app-filter-custom
+  [id]="'sync-logs-filter'"
+  [fields]="filterFields"
+  [filters]="filters"
+  [config]="filterConfig"
+  [filterActions]="filterActions"
+  [loading]="loading"
+  (filtersChange)="onFiltersChange($event)"
+></app-filter-custom>
+
+<app-table-custom
+  [id]="'sync-logs-table'"
+  [data]="data"
+  [columns]="columns"
+  [loading]="loading"
+  [showIndexList]="true"
+  [stripedRows]="true"
+  [rowActions]="rowActions"
+  [pagination]="pagination"
+  [toolbar]="toolbar"
+  [toolbarActions]="toolbarActions"
+  (pageChange)="onPageChange($event)"
+  (sortChange)="onSortChange($event)"
+  (refresh)="loadData()"
+></app-table-custom>
+
+<!-- Payload Drawer -->
+<nz-drawer
+  [nzVisible]="drawerVisible"
+  nzTitle="Chi tiết Nhật Ký Đồng Bộ (Sync Log)"
+  nzWidth="680px"
+  (nzOnClose)="drawerVisible = false"
+>
+  <ng-container *nzDrawerContent>
+    <div *ngIf="selectedLog" class="payload-drawer">
+      <nz-descriptions nzBordered nzSize="small" [nzColumn]="2">
+        <nz-descriptions-item nzTitle="Log ID" [nzSpan]="2"><code>{{ selectedLog.id }}</code></nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Hệ thống nguồn"><nz-tag nzColor="blue">{{ selectedLog.sourceSystem }}</nz-tag></nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Provider"><nz-tag nzColor="purple">{{ selectedLog.providerCode }}</nz-tag></nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Sự kiện" [nzSpan]="2"><code>{{ selectedLog.eventType }}</code></nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Trạng thái">
+          <nz-tag [nzColor]="getStatusTagColor(selectedLog.status)">{{ selectedLog.status }}</nz-tag>
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Số lần Retry">{{ selectedLog.retryCount }} / {{ selectedLog.maxRetries }}</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Thời gian tạo">{{ selectedLog.createdAt | date:'dd/MM/yyyy HH:mm:ss' }}</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Thời lượng">{{ selectedLog.executionDurationMs }} ms</nz-descriptions-item>
+        <nz-descriptions-item *ngIf="selectedLog.errorMessage" nzTitle="Chi tiết lỗi" [nzSpan]="2">
+          <span style="color:#ff4d4f; word-break: break-all;">{{ selectedLog.errorMessage }}</span>
+        </nz-descriptions-item>
+      </nz-descriptions>
+
+      <nz-divider nzText="Request Payload JSON" nzOrientation="left"></nz-divider>
+      <pre style="background: #f8fafc; padding: 12px; border-radius: 6px; font-size: 12px; max-height: 250px; overflow: auto;">{{ formatJson(selectedLog.payloadJson) }}</pre>
+
+      <nz-divider nzText="Response Data" nzOrientation="left"></nz-divider>
+      <pre style="background: #f8fafc; padding: 12px; border-radius: 6px; font-size: 12px; max-height: 250px; overflow: auto;">{{ formatJson(selectedLog.responseJson) }}</pre>
+    </div>
+  </ng-container>
+</nz-drawer>
