@@ -1,4 +1,9 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:5000/api',
+  appName: 'Integration Hub Admin',
+  apiUrl: 'http://localhost:8000/api/v1',
+  authApiUrl: 'http://localhost:8000/api',
+  authUrl: 'http://localhost:4300',
+  ssoLoginUrl: 'http://localhost:4300/auth/login',
+  clientId: 'integration-hub',
 };
