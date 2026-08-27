@@ -25,7 +25,7 @@
     flex-wrap: wrap;
     align-items: center;
 
-    nz-input-group, nz-select, nz-range-picker { flex: 1; min-width: 160px; }
+    input[nz-input], nz-select, nz-range-picker { flex: 1; min-width: 160px; }
   }
 }
 

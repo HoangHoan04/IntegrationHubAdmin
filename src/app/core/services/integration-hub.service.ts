@@ -92,20 +92,31 @@ export interface WebhookLog {
 }
 
 export interface AdapterInfo {
+  id?: string;
   providerCode: string;
   displayName: string;
-  description: string;
+  description?: string;
   category: string;
   icon?: string;
+  color?: string;
+  isActive: boolean;
+  baseUrl?: string;
+  httpMethod?: string;
+  authType?: string;
   supportedEventTypes: string[];
   supportsInboundWebhook: boolean;
+  webhookSignatureHeader?: string;
+  webhookSecretKeyName?: string;
   requiredCredentialFields: {
     key: string;
     label: string;
     type: string;
     placeholder?: string;
+    description?: string;
     isRequired: boolean;
   }[];
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 @Injectable({
@@ -185,7 +196,7 @@ export class IntegrationHubService {
     return this.http.post<any>(this.endpoints.SYNC_LOGS.RETRY, { logId });
   }
 
-  // ─── Webhook Logs ────────────────────────────────────────────────────────────
+  // ─── Webhook Logs ────────────────────────────────────────────────────
   getWebhookLogs(query: any = {}): Observable<PagedResult<WebhookLog>> {
     return this.http.post<PagedResult<WebhookLog>>(this.endpoints.WEBHOOK_LOGS.PAGINATION, query);
   }
@@ -195,8 +206,28 @@ export class IntegrationHubService {
   }
 
   // ─── Adapters ────────────────────────────────────────────────────────────────
-  getAdapters(): Observable<AdapterInfo[]> {
-    return this.http.post<AdapterInfo[]>(this.endpoints.ADAPTERS.LIST, {});
+  getAdapters(query: any = {}): Observable<AdapterInfo[]> {
+    return this.http.post<AdapterInfo[]>(this.endpoints.ADAPTERS.LIST, query);
+  }
+
+  getAdapterById(id: string): Observable<AdapterInfo> {
+    return this.http.get<AdapterInfo>(this.endpoints.ADAPTERS.DETAIL(id));
+  }
+
+  createAdapter(data: any): Observable<AdapterInfo> {
+    return this.http.post<AdapterInfo>(this.endpoints.ADAPTERS.CREATE, data);
+  }
+
+  updateAdapter(id: string, data: any): Observable<AdapterInfo> {
+    return this.http.put<AdapterInfo>(this.endpoints.ADAPTERS.UPDATE(id), data);
+  }
+
+  deleteAdapter(id: string): Observable<any> {
+    return this.http.delete<any>(this.endpoints.ADAPTERS.DELETE(id));
+  }
+
+  toggleAdapterStatus(id: string): Observable<any> {
+    return this.http.post<any>(this.endpoints.ADAPTERS.TOGGLE_STATUS(id), {});
   }
 
   testAdapter(data: any): Observable<any> {

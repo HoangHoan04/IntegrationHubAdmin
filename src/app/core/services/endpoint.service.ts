@@ -122,6 +122,11 @@ export class EndpointService {
 
   ADAPTERS = {
     LIST: `${this.baseUrl}/adapters/list`,
+    DETAIL: (id: string) => `${this.baseUrl}/adapters/${id}`,
+    CREATE: `${this.baseUrl}/adapters`,
+    UPDATE: (id: string) => `${this.baseUrl}/adapters/${id}`,
+    DELETE: (id: string) => `${this.baseUrl}/adapters/${id}`,
+    TOGGLE_STATUS: (id: string) => `${this.baseUrl}/adapters/${id}/toggle-status`,
     TEST: `${this.baseUrl}/adapters/test`,
   };
 

@@ -2,12 +2,12 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { IntegrationHubService, IntegrationCredential } from '@/app/core/services/integration-hub.service';
+import { IntegrationHubService, IntegrationCredential, AdapterInfo } from '@/app/core/services/integration-hub.service';
 
 @Component({
   selector: 'app-add-or-update-credential',
   standalone: false,
-  templateUrl: './add-or-update-credential.component.html'
+  templateUrl: './add-or-update-credential.component.html',
 })
 export class AddOrUpdateCredentialModalComponent implements OnInit {
   readonly nzModalData = inject(NZ_MODAL_DATA, { optional: true }) as { credential?: IntegrationCredential } | null;
@@ -16,40 +16,10 @@ export class AddOrUpdateCredentialModalComponent implements OnInit {
   loading = false;
   isEdit = false;
 
-  providers = ['ZALO_OA', 'VNPAY', 'MOMO', 'VIETQR', 'TELEGRAM', 'CUSTOM_WEBHOOK'];
+  adapters: AdapterInfo[] = [];
   environments = ['Sandbox', 'Production'];
 
-  // Dynamic credential fields per provider
-  credentialFields: Record<string, { key: string; label: string; isSecret: boolean }[]> = {
-    ZALO_OA: [
-      { key: 'appId', label: 'App ID', isSecret: false },
-      { key: 'appSecret', label: 'App Secret', isSecret: true },
-      { key: 'accessToken', label: 'Access Token', isSecret: true }
-    ],
-    VNPAY: [
-      { key: 'tmnCode', label: 'TMN Code', isSecret: false },
-      { key: 'hashSecret', label: 'Hash Secret', isSecret: true }
-    ],
-    MOMO: [
-      { key: 'partnerCode', label: 'Partner Code', isSecret: false },
-      { key: 'accessKey', label: 'Access Key', isSecret: true },
-      { key: 'secretKey', label: 'Secret Key', isSecret: true }
-    ],
-    VIETQR: [
-      { key: 'clientId', label: 'Client ID', isSecret: false },
-      { key: 'apiKey', label: 'API Key', isSecret: true }
-    ],
-    TELEGRAM: [
-      { key: 'botToken', label: 'Bot Token', isSecret: true },
-      { key: 'chatId', label: 'Chat ID', isSecret: false }
-    ],
-    CUSTOM_WEBHOOK: [
-      { key: 'endpointUrl', label: 'Endpoint URL', isSecret: false },
-      { key: 'signingSecret', label: 'Signing Secret', isSecret: true }
-    ]
-  };
-
-  currentFields: { key: string; label: string; isSecret: boolean }[] = [];
+  currentFields: { key: string; label: string; type: string; isSecret: boolean; isRequired: boolean; placeholder?: string }[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -68,34 +38,55 @@ export class AddOrUpdateCredentialModalComponent implements OnInit {
       environment: [data?.environment ?? 'Sandbox', [Validators.required]],
       companyName: [data?.companyName ?? ''],
       isActive: [data?.isActive ?? true],
-      fields: this.fb.group({})
+      fields: this.fb.group({}),
     });
 
-    if (data?.providerCode) {
-      this.onProviderChange(data.providerCode);
-    }
+    this.hubService.getAdapters().subscribe({
+      next: (adapters) => {
+        this.adapters = adapters || [];
+        if (data?.providerCode) {
+          this.onProviderChange(data.providerCode);
+        }
+      },
+    });
   }
 
   get fieldsGroup(): FormGroup {
     return this.form.get('fields') as FormGroup;
   }
 
-  onProviderChange(provider: string): void {
-    this.currentFields = this.credentialFields[provider] || [];
+  onProviderChange(providerCode: string): void {
+    const adapter = this.adapters.find((a) => a.providerCode === providerCode);
+    if (!adapter || !adapter.requiredCredentialFields) {
+      this.currentFields = [];
+    } else {
+      this.currentFields = adapter.requiredCredentialFields.map((f) => ({
+        key: f.key,
+        label: f.label || f.key,
+        type: f.type,
+        isSecret: f.type === 'password',
+        isRequired: f.isRequired,
+        placeholder: f.placeholder,
+      }));
+    }
+
     const group = this.fb.group({});
-    this.currentFields.forEach(f => {
-      group.addControl(f.key, this.fb.control('', Validators.required));
+    this.currentFields.forEach((f) => {
+      group.addControl(
+        f.key,
+        this.fb.control('', f.isRequired ? [Validators.required] : [])
+      );
     });
     this.form.setControl('fields', group);
   }
 
   submit(): void {
     if (this.form.invalid) {
-      Object.values(this.form.controls).forEach(c => {
+      Object.values(this.form.controls).forEach((c) => {
         c.markAsDirty();
         c.updateValueAndValidity();
       });
-      Object.values(this.fieldsGroup.controls).forEach(c => {
+      Object.values(this.fieldsGroup.controls).forEach((c) => {
         c.markAsDirty();
         c.updateValueAndValidity();
       });
@@ -111,7 +102,7 @@ export class AddOrUpdateCredentialModalComponent implements OnInit {
       environment: v.environment,
       companyName: v.companyName,
       isActive: v.isActive,
-      credentialFields: v.fields || {}
+      credentialFields: v.fields || {},
     };
 
     const obs = this.hubService.upsertCredential(payload);
@@ -125,7 +116,7 @@ export class AddOrUpdateCredentialModalComponent implements OnInit {
       error: (err) => {
         this.msg.error('Lỗi: ' + (err.error?.message || err.message));
         this.loading = false;
-      }
+      },
     });
   }
 

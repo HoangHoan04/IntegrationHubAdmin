@@ -1,0 +1,267 @@
+<form nz-form [formGroup]="form" nzLayout="vertical" (ngSubmit)="submit()" class="adapter-form">
+  <nz-tabs>
+    <!-- Tab 1: Thông tin cơ bản -->
+    <nz-tab [nzTitle]="'Thông tin chung'">
+      <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzRequired>Mã Provider (Code)</nz-form-label>
+            <nz-form-control nzErrorTip="Chữ in hoa, số và dấu gạch dưới (vd: SENDGRID, SPEEDSMS, VIETTEL_POST)">
+              <input
+                nz-input
+                formControlName="providerCode"
+                placeholder="VD: SENDGRID, SPEEDSMS..."
+                [style.textTransform]="'uppercase'"
+              />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzRequired>Tên hiển thị</nz-form-label>
+            <nz-form-control nzErrorTip="Vui lòng nhập tên hiển thị">
+              <input nz-input formControlName="displayName" placeholder="VD: SendGrid Email Delivery" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzRequired>Phân loại (Category)</nz-form-label>
+            <nz-form-control>
+              <nz-select formControlName="category">
+                <nz-option *ngFor="let c of categories" [nzLabel]="c.label" [nzValue]="c.value"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label>Icon (Antd/Emoji)</nz-form-label>
+            <nz-form-control>
+              <input nz-input formControlName="icon" placeholder="mail, send, api, ✉️" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label>Màu sắc nhận diện</nz-form-label>
+            <nz-form-control>
+              <div class="color-picker-wrap">
+                <input type="color" formControlName="color" class="color-input" />
+                <input nz-input formControlName="color" class="color-text" />
+              </div>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="24">
+          <nz-form-item>
+            <nz-form-label>Mô tả chức năng</nz-form-label>
+            <nz-form-control>
+              <textarea
+                nz-input
+                formControlName="description"
+                rows="2"
+                placeholder="Mô tả mục đích kết nối, dịch vụ đối tác cung cấp..."
+              ></textarea>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="24">
+          <nz-form-item>
+            <label nz-checkbox formControlName="isActive">
+              <strong>Kích hoạt trạng thái hoạt động của Adapter</strong>
+            </label>
+          </nz-form-item>
+        </div>
+      </div>
+    </nz-tab>
+
+    <!-- Tab 2: Cấu hình Kết nối & Endpoint -->
+    <nz-tab [nzTitle]="'Kết nối & Endpoint'">
+      <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="18">
+          <nz-form-item>
+            <nz-form-label nzRequired>Base URL Endpoint</nz-form-label>
+            <nz-form-control nzErrorTip="Vui lòng nhập URL hợp lệ">
+              <input
+                nz-input
+                formControlName="baseUrl"
+                placeholder="https://api.partner.com/v1/send hoặc https://api.speedsms.vn/index.php"
+              />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label nzRequired>HTTP Method</nz-form-label>
+            <nz-form-control>
+              <nz-select formControlName="httpMethod">
+                <nz-option *ngFor="let m of httpMethods" [nzLabel]="m" [nzValue]="m"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzRequired>Kiểu xác thực (Auth Type)</nz-form-label>
+            <nz-form-control>
+              <nz-select formControlName="authType">
+                <nz-option *ngFor="let a of authTypes" [nzLabel]="a" [nzValue]="a"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+
+      <nz-divider nzText="Sự kiện hỗ trợ (Supported Event Types)" nzOrientation="left" nzDashed></nz-divider>
+
+      <div class="event-types-section">
+        <div class="tags-container">
+          <nz-tag
+            *ngFor="let evt of supportedEventsArray.controls; let i = index"
+            [nzMode]="'closeable'"
+            (nzOnClose)="removeEvent(i)"
+            nzColor="blue"
+          >
+            {{ evt.value }}
+          </nz-tag>
+        </div>
+
+        <div class="add-event-row">
+          <input
+            nz-input
+            [(ngModel)]="newEventType"
+            [ngModelOptions]="{ standalone: true }"
+            placeholder="Nhập tên sự kiện (vd: order.created, sms.send, *)"
+            (keydown.enter)="$event.preventDefault(); addNewEvent()"
+            style="max-width: 320px;"
+          />
+          <button type="button" nz-button nzType="dashed" (click)="addNewEvent()">
+            <span nz-icon nzType="plus"></span> Thêm sự kiện
+          </button>
+        </div>
+      </div>
+    </nz-tab>
+
+    <!-- Tab 3: Định nghĩa Trường xác thực (Credential Fields) -->
+    <nz-tab [nzTitle]="'Trường xác thực (Credentials)'">
+      <div class="credential-fields-header">
+        <p class="section-desc">
+          Định nghĩa các thông tin bí mật (API Key, Token, Client Secret...) mà người dùng cần điền khi cấu hình Credentials cho Adapter này.
+        </p>
+        <button type="button" nz-button nzType="dashed" nzSize="small" (click)="addCredentialFieldControl()">
+          <span nz-icon nzType="plus"></span> Thêm trường
+        </button>
+      </div>
+
+      <div class="credential-fields-list">
+        <div
+          *ngFor="let field of credentialFieldsArray.controls; let i = index"
+          [formGroup]="$any(field)"
+          class="field-card"
+        >
+          <div nz-row [nzGutter]="12" nzAlign="middle">
+            <div nz-col [nzSpan]="6">
+              <nz-form-item class="mb-0">
+                <nz-form-label [nzRequired]="true" [nzNoColon]="true">Mã Key</nz-form-label>
+                <nz-form-control nzErrorTip="Chữ và số (vd: ApiKey, SecretKey, Token)">
+                  <input nz-input formControlName="key" placeholder="VD: ApiKey, SecretToken" />
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+
+            <div nz-col [nzSpan]="7">
+              <nz-form-item class="mb-0">
+                <nz-form-label [nzRequired]="true" [nzNoColon]="true">Tên nhãn hiển thị</nz-form-label>
+                <nz-form-control nzErrorTip="Bắt buộc">
+                  <input nz-input formControlName="label" placeholder="VD: Khóa bí mật API Key" />
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+
+            <div nz-col [nzSpan]="5">
+              <nz-form-item class="mb-0">
+                <nz-form-label [nzNoColon]="true">Loại dữ liệu</nz-form-label>
+                <nz-form-control>
+                  <nz-select formControlName="type">
+                    <nz-option *ngFor="let t of fieldTypes" [nzLabel]="t.label" [nzValue]="t.value"></nz-option>
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+
+            <div nz-col [nzSpan]="4" class="pt-6">
+              <label nz-checkbox formControlName="isRequired">Bắt buộc</label>
+            </div>
+
+            <div nz-col [nzSpan]="2" class="pt-6 text-right">
+              <button
+                type="button"
+                nz-button
+                nzType="text"
+                nzDanger
+                (click)="removeCredentialField(i)"
+                [disabled]="credentialFieldsArray.length <= 1"
+                title="Xóa trường này"
+              >
+                <span nz-icon nzType="delete"></span>
+              </button>
+            </div>
+
+            <div nz-col [nzSpan]="24" class="mt-2">
+              <input nz-input formControlName="placeholder" placeholder="Gợi ý placeholder (tùy chọn)" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </nz-tab>
+
+    <!-- Tab 4: Cấu hình Inbound Webhook -->
+    <nz-tab [nzTitle]="'Tiếp nhận Webhook'">
+      <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="24">
+          <nz-form-item>
+            <label nz-checkbox formControlName="supportsInboundWebhook">
+              <strong>Hỗ trợ nhận ngược Webhook (Inbound Webhook) từ đối tác này</strong>
+            </label>
+          </nz-form-item>
+        </div>
+
+        <ng-container *ngIf="form.get('supportsInboundWebhook')?.value">
+          <div nz-col [nzSpan]="12">
+            <nz-form-item>
+              <nz-form-label>Tên Header chữ ký bảo mật</nz-form-label>
+              <nz-form-control>
+                <input nz-input formControlName="webhookSignatureHeader" placeholder="X-Hub-Signature, X-Zalo-Signature..." />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="12">
+            <nz-form-item>
+              <nz-form-label>Tên Key trong Credential để verify chữ ký</nz-form-label>
+              <nz-form-control>
+                <input nz-input formControlName="webhookSecretKeyName" placeholder="SecretKey, HmacSecret..." />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </ng-container>
+      </div>
+    </nz-tab>
+  </nz-tabs>
+
+  <div class="modal-footer">
+    <button nz-button type="button" (click)="cancel()">Hủy bỏ</button>
+    <button nz-button nzType="primary" type="submit" [nzLoading]="loading">
+      {{ isEdit ? 'Lưu thay đổi' : 'Thêm Adapter' }}
+    </button>
+  </div>
+</form>

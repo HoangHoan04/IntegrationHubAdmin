@@ -19,8 +19,8 @@
     <nz-form-item>
       <nz-form-label nzRequired>Provider bên thứ 3</nz-form-label>
       <nz-form-control nzErrorTip="Chọn provider">
-        <nz-select formControlName="providerCode">
-          <nz-option *ngFor="let p of providers" [nzValue]="p" [nzLabel]="p"></nz-option>
+        <nz-select formControlName="providerCode" nzPlaceHolder="Chọn Provider">
+          <nz-option *ngFor="let a of adapters" [nzValue]="a.providerCode" [nzLabel]="a.displayName + ' (' + a.providerCode + ')'"></nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>

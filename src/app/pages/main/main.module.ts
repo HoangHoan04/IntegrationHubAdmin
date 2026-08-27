@@ -15,6 +15,7 @@ import { AddOrUpdateCredentialModalComponent } from './credentials/add-or-update
 
 // Adapters
 import { AdaptersComponent } from './adapters/adapters.component';
+import { AddOrUpdateAdapterModalComponent } from './adapters/add-or-update-adapter/add-or-update-adapter.component';
 
 // Sync Logs
 import { SyncLogsComponent } from './sync-logs/sync-logs.component';
@@ -48,6 +49,8 @@ const routes: Routes = [
   { path: 'playground', component: PlaygroundComponent },
 ];
 
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
+
 @NgModule({
   declarations: [
     DashboardComponent,
@@ -56,10 +59,11 @@ const routes: Routes = [
     CredentialsComponent,
     AddOrUpdateCredentialModalComponent,
     AdaptersComponent,
+    AddOrUpdateAdapterModalComponent,
     SyncLogsComponent,
     WebhooksComponent,
     PlaygroundComponent,
   ],
-  imports: [SharedModule, RouterModule.forChild(routes)],
+  imports: [SharedModule, NzTabsModule, RouterModule.forChild(routes)],
 })
 export class MainModule {}

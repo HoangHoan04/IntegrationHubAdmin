@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { NzMessageService } from 'ng-zorro-antd/message';
+import { enumData } from '@/app/core/constants/enums/enumData';
 import { IntegrationHubService, SyncLog } from '@/app/core/services/integration-hub.service';
 import {
   CommonFilterActions,
@@ -14,6 +13,8 @@ import {
   TableColumn,
   ToolbarConfig,
 } from '@/app/shared/components/table-custom/table-custom.types';
+import { Component, OnInit } from '@angular/core';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-sync-logs',
@@ -26,9 +27,9 @@ export class SyncLogsComponent implements OnInit {
   loading = false;
 
   pagination: PaginationConfig = {
-    current: 1,
-    pageSize: 15,
-    total: 0,
+    current: enumData.PAGE.PAGE_INDEX,
+    pageSize: enumData.PAGE.PAGE_SIZE,
+    total: enumData.PAGE.TOTAL,
     showTotal: true,
   };
 
@@ -137,7 +138,13 @@ export class SyncLogsComponent implements OnInit {
       type: 'tag',
       width: '130px',
       tagSeverity: (v) =>
-        v === 'Success' ? 'success' : v === 'Retrying' ? 'warning' : v === 'Processing' ? 'info' : 'danger',
+        v === 'Success'
+          ? 'success'
+          : v === 'Retrying'
+            ? 'warning'
+            : v === 'Processing'
+              ? 'info'
+              : 'danger',
     },
     {
       field: 'retryCount',
@@ -177,7 +184,10 @@ export class SyncLogsComponent implements OnInit {
       label: 'Thử lại (Retry)',
       icon: 'redo',
       severity: 'warning',
-      visible: (record) => record.status === 'Failed' || record.status === 'Retrying' || record.status === 'DeadLetter',
+      visible: (record) =>
+        record.status === 'Failed' ||
+        record.status === 'Retrying' ||
+        record.status === 'DeadLetter',
       onClick: (record) => this.retryLog(record),
     },
   ];
@@ -257,7 +267,9 @@ export class SyncLogsComponent implements OnInit {
         if (res.isSuccess) {
           this.message.success('Đã thử lại thành công!');
         } else {
-          this.message.warning('Lệnh thử lại đã thực thi nhưng chưa thành công: ' + (res.errorMessage || 'Lỗi'));
+          this.message.warning(
+            'Lệnh thử lại đã thực thi nhưng chưa thành công: ' + (res.errorMessage || 'Lỗi'),
+          );
         }
         this.loadData();
       },

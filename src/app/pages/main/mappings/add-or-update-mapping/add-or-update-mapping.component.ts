@@ -17,7 +17,7 @@ export class AddOrUpdateMappingModalComponent implements OnInit {
   mapping?: IntegrationMapping;
 
   sourceSystems = ['HRM', 'WMS', 'TMS', 'PMS', 'CMS', 'EAM', 'AUTH'];
-  providers = ['ZALO_OA', 'VNPAY', 'MOMO', 'VIETQR', 'TELEGRAM', 'CUSTOM_WEBHOOK'];
+  adapters: { providerCode: string; displayName: string }[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -35,10 +35,16 @@ export class AddOrUpdateMappingModalComponent implements OnInit {
       name: [this.mapping?.name || '', [Validators.required, Validators.maxLength(200)]],
       sourceSystem: [this.mapping?.sourceSystem || 'HRM', [Validators.required]],
       eventType: [this.mapping?.eventType || '', [Validators.required, Validators.maxLength(100)]],
-      providerCode: [this.mapping?.providerCode || 'ZALO_OA', [Validators.required]],
+      providerCode: [this.mapping?.providerCode || null, [Validators.required]],
       isActive: [this.mapping?.isActive ?? true],
       description: [this.mapping?.description || ''],
       configJson: [this.mapping?.configJson || '{\n  \n}']
+    });
+
+    this.hubService.getAdapters().subscribe({
+      next: (res) => {
+        this.adapters = (res || []).map(a => ({ providerCode: a.providerCode, displayName: a.displayName }));
+      }
     });
   }
 

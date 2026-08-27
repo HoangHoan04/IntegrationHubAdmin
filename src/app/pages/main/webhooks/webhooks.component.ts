@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { NzMessageService } from 'ng-zorro-antd/message';
+import { enumData } from '@/app/core/constants/enums/enumData';
 import { IntegrationHubService, WebhookLog } from '@/app/core/services/integration-hub.service';
 import {
   CommonFilterActions,
@@ -14,6 +13,8 @@ import {
   TableColumn,
   ToolbarConfig,
 } from '@/app/shared/components/table-custom/table-custom.types';
+import { Component, OnInit } from '@angular/core';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-webhooks',
@@ -26,9 +27,9 @@ export class WebhooksComponent implements OnInit {
   loading = false;
 
   pagination: PaginationConfig = {
-    current: 1,
-    pageSize: 15,
-    total: 0,
+    current: enumData.PAGE.PAGE_INDEX,
+    pageSize: enumData.PAGE.PAGE_SIZE,
+    total: enumData.PAGE.TOTAL,
     showTotal: true,
   };
 
