@@ -1,9 +1,11 @@
 <div class="dashboard-container">
-  <!-- Header Title -->
   <div class="page-header">
     <div class="title-group">
       <h2>Trung Tâm Giám Sát & Điều Phối Tích Hợp (Integration Hub)</h2>
-      <p class="subtitle">Theo dõi lưu lượng sự kiện, tỷ lệ đồng bộ, hiệu năng kết nối các đối tác bên thứ 3 trong thời gian thực</p>
+      <p class="subtitle">
+        Theo dõi lưu lượng sự kiện, tỷ lệ đồng bộ, hiệu năng kết nối các đối tác bên thứ 3 trong
+        thời gian thực
+      </p>
     </div>
     <div class="action-group">
       <button nz-button nzType="default" (click)="loadStats()" [nzLoading]="loading">
@@ -15,7 +17,6 @@
     </div>
   </div>
 
-  <!-- KPI Cards -->
   <div class="kpi-grid">
     <div class="kpi-card blue">
       <div class="kpi-icon">
@@ -62,11 +63,12 @@
     </div>
   </div>
 
-  <!-- Charts Row 1 -->
   <div class="charts-grid-main">
     <div class="chart-panel">
       <div class="panel-header">
-        <span class="panel-title"><span nz-icon nzType="line-chart"></span> Xu hướng đồng bộ 7 ngày qua</span>
+        <span class="panel-title"
+          ><span nz-icon nzType="line-chart"></span> Xu hướng đồng bộ 7 ngày qua</span
+        >
       </div>
       <div class="panel-body">
         <div echarts [options]="trendChartOption" class="echarts-box"></div>
@@ -74,11 +76,12 @@
     </div>
   </div>
 
-  <!-- Charts Row 2 -->
   <div class="charts-grid-secondary">
     <div class="chart-panel">
       <div class="panel-header">
-        <span class="panel-title"><span nz-icon nzType="pie-chart"></span> Phân bổ theo Đối tác (Provider)</span>
+        <span class="panel-title"
+          ><span nz-icon nzType="pie-chart"></span> Phân bổ theo Đối tác (Provider)</span
+        >
       </div>
       <div class="panel-body">
         <div echarts [options]="providerChartOption" class="echarts-box"></div>
@@ -87,7 +90,9 @@
 
     <div class="chart-panel">
       <div class="panel-header">
-        <span class="panel-title"><span nz-icon nzType="bar-chart"></span> Phân bổ theo Hệ thống nguồn (ERP Modules)</span>
+        <span class="panel-title"
+          ><span nz-icon nzType="bar-chart"></span> Phân bổ theo Hệ thống nguồn (ERP Modules)</span
+        >
       </div>
       <div class="panel-body">
         <div echarts [options]="sourceChartOption" class="echarts-box"></div>

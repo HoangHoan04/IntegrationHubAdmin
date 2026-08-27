@@ -1,9 +1,11 @@
 <div class="adapters-container">
-  <!-- Page Header -->
   <div class="page-header">
     <div class="header-left">
       <h2>Danh Mục Adapter Kết Nối (Dynamic Adapters)</h2>
-      <p class="subtitle">Quản lý toàn bộ danh mục cổng tích hợp đối tác, endpoint, cấu hình sự kiện và trường xác thực động</p>
+      <p class="subtitle">
+        Quản lý toàn bộ danh mục cổng tích hợp đối tác, endpoint, cấu hình sự kiện và trường xác
+        thực động
+      </p>
     </div>
     <div class="header-right">
       <button nz-button nzType="primary" (click)="openCreateModal()" class="add-adapter-btn">
@@ -12,7 +14,6 @@
     </div>
   </div>
 
-  <!-- Filter & Action Bar -->
   <div class="filter-action-bar">
     <div class="filter-controls">
       <div class="search-input-wrap">
@@ -25,13 +26,25 @@
       </div>
 
       <div class="select-wrap">
-        <nz-select [(ngModel)]="selectedCategory" (ngModelChange)="applyFilter()" nzPlaceHolder="Tất cả phân loại">
-          <nz-option *ngFor="let c of categories" [nzLabel]="c.label" [nzValue]="c.value"></nz-option>
+        <nz-select
+          [(ngModel)]="selectedCategory"
+          (ngModelChange)="applyFilter()"
+          nzPlaceHolder="Tất cả phân loại"
+        >
+          <nz-option
+            *ngFor="let c of categories"
+            [nzLabel]="c.label"
+            [nzValue]="c.value"
+          ></nz-option>
         </nz-select>
       </div>
 
       <div class="select-wrap status-select">
-        <nz-select [(ngModel)]="selectedStatus" (ngModelChange)="applyFilter()" nzPlaceHolder="Trạng thái">
+        <nz-select
+          [(ngModel)]="selectedStatus"
+          (ngModelChange)="applyFilter()"
+          nzPlaceHolder="Trạng thái"
+        >
           <nz-option [nzLabel]="'Tất cả trạng thái'" [nzValue]="null"></nz-option>
           <nz-option [nzLabel]="'Đang hoạt động'" [nzValue]="true"></nz-option>
           <nz-option [nzLabel]="'Đang tạm dừng'" [nzValue]="false"></nz-option>
@@ -71,7 +84,6 @@
     </div>
   </div>
 
-  <!-- Content Views -->
   <nz-spin [nzSpinning]="loading">
     @if (viewMode === 'card') {
       <div class="adapters-grid">
@@ -79,13 +91,19 @@
           <div class="empty-state">
             <span nz-icon nzType="api" class="empty-icon"></span>
             <p class="empty-title">Chưa có Adapter nào</p>
-            <p class="empty-desc">Nhấn "Thêm Adapter Mới" để khai báo cổng kết nối đầu tiên của bạn.</p>
+            <p class="empty-desc">
+              Nhấn "Thêm Adapter Mới" để khai báo cổng kết nối đầu tiên của bạn.
+            </p>
             <button nz-button nzType="primary" (click)="openCreateModal()">
               <span nz-icon nzType="plus"></span> Thêm Adapter Đầu Tiên
             </button>
           </div>
         } @else {
-          <div class="adapter-card" *ngFor="let adapter of filteredAdapters" [class.card-inactive]="!adapter.isActive">
+          <div
+            class="adapter-card"
+            *ngFor="let adapter of filteredAdapters"
+            [class.card-inactive]="!adapter.isActive"
+          >
             <div class="adapter-header" [style.borderLeftColor]="adapter.color || '#3b82f6'">
               <div class="adapter-icon" [style.color]="adapter.color || '#3b82f6'">
                 <span nz-icon [nzType]="adapter.icon || 'api'" nzTheme="outline"></span>
@@ -107,12 +125,16 @@
               </div>
             </div>
 
-            <p class="adapter-desc">{{ adapter.description || 'Chưa có mô tả cho adapter này.' }}</p>
+            <p class="adapter-desc">
+              {{ adapter.description || 'Chưa có mô tả cho adapter này.' }}
+            </p>
 
             <div class="adapter-specs">
               <div class="spec-row" *ngIf="adapter.baseUrl">
                 <span class="spec-label">Endpoint:</span>
-                <code class="spec-value endpoint-code" [title]="adapter.baseUrl">{{ adapter.baseUrl }}</code>
+                <code class="spec-value endpoint-code" [title]="adapter.baseUrl">{{
+                  adapter.baseUrl
+                }}</code>
               </div>
               <div class="spec-row">
                 <span class="spec-label">Method / Auth:</span>
@@ -127,7 +149,7 @@
 
             <div class="capabilities">
               <div class="cap-item" *ngFor="let evt of adapter.supportedEventTypes">
-                <span nz-icon nzType="check-circle" nzTheme="fill" style="color: #52c41a;"></span>
+                <span nz-icon nzType="check-circle" nzTheme="fill" style="color: #52c41a"></span>
                 <span>{{ evt }}</span>
               </div>
             </div>
@@ -138,26 +160,56 @@
               <nz-tag *ngFor="let field of adapter.requiredCredentialFields" nzColor="geekblue">
                 {{ field.label || field.key }} <small>({{ field.type }})</small>
               </nz-tag>
-              <span *ngIf="!adapter.requiredCredentialFields || adapter.requiredCredentialFields.length === 0" class="no-fields-hint">
+              <span
+                *ngIf="
+                  !adapter.requiredCredentialFields || adapter.requiredCredentialFields.length === 0
+                "
+                class="no-fields-hint"
+              >
                 Không yêu cầu trường xác thực
               </span>
             </div>
 
             <div class="card-actions">
-              <button nz-button nzType="primary" nzSize="small" (click)="goToPlayground(adapter)" title="Thử nghiệm kết nối">
+              <button
+                nz-button
+                nzType="primary"
+                nzSize="small"
+                (click)="goToPlayground(adapter)"
+                title="Thử nghiệm kết nối"
+              >
                 <span nz-icon nzType="thunderbolt"></span> Playground
               </button>
 
               <div class="right-actions">
-                <button nz-button nzType="default" nzSize="small" (click)="toggleActive(adapter)" [title]="adapter.isActive ? 'Tạm dừng' : 'Kích hoạt'">
+                <button
+                  nz-button
+                  nzType="default"
+                  nzSize="small"
+                  (click)="toggleActive(adapter)"
+                  [title]="adapter.isActive ? 'Tạm dừng' : 'Kích hoạt'"
+                >
                   <span nz-icon [nzType]="adapter.isActive ? 'pause-circle' : 'play-circle'"></span>
                 </button>
 
-                <button nz-button nzType="default" nzSize="small" (click)="openEditModal(adapter)" title="Chỉnh sửa Adapter">
+                <button
+                  nz-button
+                  nzType="default"
+                  nzSize="small"
+                  (click)="openEditModal(adapter)"
+                  title="Chỉnh sửa Adapter"
+                >
                   <span nz-icon nzType="edit"></span>
                 </button>
 
-                <button nz-button nzType="default" nzDanger nzSize="small" (click)="deleteAdapter(adapter)" title="Xóa Adapter">
+                <button
+                  nz-button
+                  nzType="default"
+                  nzDanger
+                  nzSize="small"
+                  (click)="deleteAdapter(adapter)"
+                  title="Xóa Adapter"
+                >
                   <span nz-icon nzType="delete"></span>
                 </button>
               </div>

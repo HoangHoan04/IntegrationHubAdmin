@@ -24,7 +24,6 @@
   (refresh)="loadData()"
 ></app-table-custom>
 
-<!-- Payload Drawer -->
 <nz-drawer
   [nzVisible]="drawerVisible"
   nzTitle="Chi tiết Nhật Ký Đồng Bộ (Sync Log)"
@@ -34,26 +33,60 @@
   <ng-container *nzDrawerContent>
     <div *ngIf="selectedLog" class="payload-drawer">
       <nz-descriptions nzBordered nzSize="small" [nzColumn]="2">
-        <nz-descriptions-item nzTitle="Log ID" [nzSpan]="2"><code>{{ selectedLog.id }}</code></nz-descriptions-item>
-        <nz-descriptions-item nzTitle="Hệ thống nguồn"><nz-tag nzColor="blue">{{ selectedLog.sourceSystem }}</nz-tag></nz-descriptions-item>
-        <nz-descriptions-item nzTitle="Provider"><nz-tag nzColor="purple">{{ selectedLog.providerCode }}</nz-tag></nz-descriptions-item>
-        <nz-descriptions-item nzTitle="Sự kiện" [nzSpan]="2"><code>{{ selectedLog.eventType }}</code></nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Log ID" [nzSpan]="2"
+          ><code>{{ selectedLog.id }}</code></nz-descriptions-item
+        >
+        <nz-descriptions-item nzTitle="Hệ thống nguồn"
+          ><nz-tag nzColor="blue">{{ selectedLog.sourceSystem }}</nz-tag></nz-descriptions-item
+        >
+        <nz-descriptions-item nzTitle="Provider"
+          ><nz-tag nzColor="purple">{{ selectedLog.providerCode }}</nz-tag></nz-descriptions-item
+        >
+        <nz-descriptions-item nzTitle="Sự kiện" [nzSpan]="2"
+          ><code>{{ selectedLog.eventType }}</code></nz-descriptions-item
+        >
         <nz-descriptions-item nzTitle="Trạng thái">
-          <nz-tag [nzColor]="getStatusTagColor(selectedLog.status)">{{ selectedLog.status }}</nz-tag>
+          <nz-tag [nzColor]="getStatusTagColor(selectedLog.status)">{{
+            selectedLog.status
+          }}</nz-tag>
         </nz-descriptions-item>
-        <nz-descriptions-item nzTitle="Số lần Retry">{{ selectedLog.retryCount }} / {{ selectedLog.maxRetries }}</nz-descriptions-item>
-        <nz-descriptions-item nzTitle="Thời gian tạo">{{ selectedLog.createdAt | date:'dd/MM/yyyy HH:mm:ss' }}</nz-descriptions-item>
-        <nz-descriptions-item nzTitle="Thời lượng">{{ selectedLog.executionDurationMs }} ms</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Số lần Retry"
+          >{{ selectedLog.retryCount }} / {{ selectedLog.maxRetries }}</nz-descriptions-item
+        >
+        <nz-descriptions-item nzTitle="Thời gian tạo">{{
+          selectedLog.createdAt | date: 'dd/MM/yyyy HH:mm:ss'
+        }}</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Thời lượng"
+          >{{ selectedLog.executionDurationMs }} ms</nz-descriptions-item
+        >
         <nz-descriptions-item *ngIf="selectedLog.errorMessage" nzTitle="Chi tiết lỗi" [nzSpan]="2">
-          <span style="color:#ff4d4f; word-break: break-all;">{{ selectedLog.errorMessage }}</span>
+          <span style="color: #ff4d4f; word-break: break-all">{{ selectedLog.errorMessage }}</span>
         </nz-descriptions-item>
       </nz-descriptions>
 
       <nz-divider nzText="Request Payload JSON" nzOrientation="left"></nz-divider>
-      <pre style="background: #f8fafc; padding: 12px; border-radius: 6px; font-size: 12px; max-height: 250px; overflow: auto;">{{ formatJson(selectedLog.payloadJson) }}</pre>
+      <pre
+        style="
+          background: #f8fafc;
+          padding: 12px;
+          border-radius: 6px;
+          font-size: 12px;
+          max-height: 250px;
+          overflow: auto;
+        "
+        >{{ formatJson(selectedLog.payloadJson) }}</pre>
 
       <nz-divider nzText="Response Data" nzOrientation="left"></nz-divider>
-      <pre style="background: #f8fafc; padding: 12px; border-radius: 6px; font-size: 12px; max-height: 250px; overflow: auto;">{{ formatJson(selectedLog.responseJson) }}</pre>
+      <pre
+        style="
+          background: #f8fafc;
+          padding: 12px;
+          border-radius: 6px;
+          font-size: 12px;
+          max-height: 250px;
+          overflow: auto;
+        "
+        >{{ formatJson(selectedLog.responseJson) }}</pre>
     </div>
   </ng-container>
 </nz-drawer>

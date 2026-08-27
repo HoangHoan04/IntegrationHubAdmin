@@ -1,12 +1,13 @@
 <form nz-form [formGroup]="form" nzLayout="vertical" (ngSubmit)="submit()" class="adapter-form">
   <nz-tabs>
-    <!-- Tab 1: Thông tin cơ bản -->
     <nz-tab [nzTitle]="'Thông tin chung'">
       <div nz-row [nzGutter]="16">
         <div nz-col [nzSpan]="12">
           <nz-form-item>
             <nz-form-label nzRequired>Mã Provider (Code)</nz-form-label>
-            <nz-form-control nzErrorTip="Chữ in hoa, số và dấu gạch dưới (vd: SENDGRID, SPEEDSMS, VIETTEL_POST)">
+            <nz-form-control
+              nzErrorTip="Chữ in hoa, số và dấu gạch dưới (vd: SENDGRID, SPEEDSMS, VIETTEL_POST)"
+            >
               <input
                 nz-input
                 formControlName="providerCode"
@@ -21,7 +22,11 @@
           <nz-form-item>
             <nz-form-label nzRequired>Tên hiển thị</nz-form-label>
             <nz-form-control nzErrorTip="Vui lòng nhập tên hiển thị">
-              <input nz-input formControlName="displayName" placeholder="VD: SendGrid Email Delivery" />
+              <input
+                nz-input
+                formControlName="displayName"
+                placeholder="VD: SendGrid Email Delivery"
+              />
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -31,7 +36,11 @@
             <nz-form-label nzRequired>Phân loại (Category)</nz-form-label>
             <nz-form-control>
               <nz-select formControlName="category">
-                <nz-option *ngFor="let c of categories" [nzLabel]="c.label" [nzValue]="c.value"></nz-option>
+                <nz-option
+                  *ngFor="let c of categories"
+                  [nzLabel]="c.label"
+                  [nzValue]="c.value"
+                ></nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>
@@ -82,7 +91,6 @@
       </div>
     </nz-tab>
 
-    <!-- Tab 2: Cấu hình Kết nối & Endpoint -->
     <nz-tab [nzTitle]="'Kết nối & Endpoint'">
       <div nz-row [nzGutter]="16">
         <div nz-col [nzSpan]="18">
@@ -121,7 +129,11 @@
         </div>
       </div>
 
-      <nz-divider nzText="Sự kiện hỗ trợ (Supported Event Types)" nzOrientation="left" nzDashed></nz-divider>
+      <nz-divider
+        nzText="Sự kiện hỗ trợ (Supported Event Types)"
+        nzOrientation="left"
+        nzDashed
+      ></nz-divider>
 
       <div class="event-types-section">
         <div class="tags-container">
@@ -142,7 +154,7 @@
             [ngModelOptions]="{ standalone: true }"
             placeholder="Nhập tên sự kiện (vd: order.created, sms.send, *)"
             (keydown.enter)="$event.preventDefault(); addNewEvent()"
-            style="max-width: 320px;"
+            style="max-width: 320px"
           />
           <button type="button" nz-button nzType="dashed" (click)="addNewEvent()">
             <span nz-icon nzType="plus"></span> Thêm sự kiện
@@ -151,13 +163,19 @@
       </div>
     </nz-tab>
 
-    <!-- Tab 3: Định nghĩa Trường xác thực (Credential Fields) -->
     <nz-tab [nzTitle]="'Trường xác thực (Credentials)'">
       <div class="credential-fields-header">
         <p class="section-desc">
-          Định nghĩa các thông tin bí mật (API Key, Token, Client Secret...) mà người dùng cần điền khi cấu hình Credentials cho Adapter này.
+          Định nghĩa các thông tin bí mật (API Key, Token, Client Secret...) mà người dùng cần điền
+          khi cấu hình Credentials cho Adapter này.
         </p>
-        <button type="button" nz-button nzType="dashed" nzSize="small" (click)="addCredentialFieldControl()">
+        <button
+          type="button"
+          nz-button
+          nzType="dashed"
+          nzSize="small"
+          (click)="addCredentialFieldControl()"
+        >
           <span nz-icon nzType="plus"></span> Thêm trường
         </button>
       </div>
@@ -180,7 +198,9 @@
 
             <div nz-col [nzSpan]="7">
               <nz-form-item class="mb-0">
-                <nz-form-label [nzRequired]="true" [nzNoColon]="true">Tên nhãn hiển thị</nz-form-label>
+                <nz-form-label [nzRequired]="true" [nzNoColon]="true"
+                  >Tên nhãn hiển thị</nz-form-label
+                >
                 <nz-form-control nzErrorTip="Bắt buộc">
                   <input nz-input formControlName="label" placeholder="VD: Khóa bí mật API Key" />
                 </nz-form-control>
@@ -192,7 +212,11 @@
                 <nz-form-label [nzNoColon]="true">Loại dữ liệu</nz-form-label>
                 <nz-form-control>
                   <nz-select formControlName="type">
-                    <nz-option *ngFor="let t of fieldTypes" [nzLabel]="t.label" [nzValue]="t.value"></nz-option>
+                    <nz-option
+                      *ngFor="let t of fieldTypes"
+                      [nzLabel]="t.label"
+                      [nzValue]="t.value"
+                    ></nz-option>
                   </nz-select>
                 </nz-form-control>
               </nz-form-item>
@@ -217,14 +241,17 @@
             </div>
 
             <div nz-col [nzSpan]="24" class="mt-2">
-              <input nz-input formControlName="placeholder" placeholder="Gợi ý placeholder (tùy chọn)" />
+              <input
+                nz-input
+                formControlName="placeholder"
+                placeholder="Gợi ý placeholder (tùy chọn)"
+              />
             </div>
           </div>
         </div>
       </div>
     </nz-tab>
 
-    <!-- Tab 4: Cấu hình Inbound Webhook -->
     <nz-tab [nzTitle]="'Tiếp nhận Webhook'">
       <div nz-row [nzGutter]="16">
         <div nz-col [nzSpan]="24">
@@ -240,7 +267,11 @@
             <nz-form-item>
               <nz-form-label>Tên Header chữ ký bảo mật</nz-form-label>
               <nz-form-control>
-                <input nz-input formControlName="webhookSignatureHeader" placeholder="X-Hub-Signature, X-Zalo-Signature..." />
+                <input
+                  nz-input
+                  formControlName="webhookSignatureHeader"
+                  placeholder="X-Hub-Signature, X-Zalo-Signature..."
+                />
               </nz-form-control>
             </nz-form-item>
           </div>
@@ -249,7 +280,11 @@
             <nz-form-item>
               <nz-form-label>Tên Key trong Credential để verify chữ ký</nz-form-label>
               <nz-form-control>
-                <input nz-input formControlName="webhookSecretKeyName" placeholder="SecretKey, HmacSecret..." />
+                <input
+                  nz-input
+                  formControlName="webhookSecretKeyName"
+                  placeholder="SecretKey, HmacSecret..."
+                />
               </nz-form-control>
             </nz-form-item>
           </div>

@@ -2,12 +2,13 @@
   <div class="page-header">
     <div>
       <h2>🧪 Sync Playground</h2>
-      <p class="subtitle">Thử nghiệm gửi sự kiện tích hợp trực tiếp qua Hub — kiểm tra routing và adapter live</p>
+      <p class="subtitle">
+        Thử nghiệm gửi sự kiện tích hợp trực tiếp qua Hub — kiểm tra routing và adapter live
+      </p>
     </div>
   </div>
 
   <div class="playground-layout">
-    <!-- Left: Input -->
     <div class="input-panel">
       <div class="panel-card">
         <h3 class="panel-title">Cấu hình Sự Kiện Test</h3>
@@ -16,7 +17,11 @@
           <nz-form-item>
             <nz-form-label nzRequired>Chọn mẫu Provider / Hệ thống</nz-form-label>
             <nz-form-control nzErrorTip="Chọn provider">
-              <nz-select formControlName="providerCode" nzPlaceHolder="Chọn Provider để nạp mẫu sự kiện" (ngModelChange)="onProviderChange($event)">
+              <nz-select
+                formControlName="providerCode"
+                nzPlaceHolder="Chọn Provider để nạp mẫu sự kiện"
+                (ngModelChange)="onProviderChange($event)"
+              >
                 <nz-option *ngFor="let p of providers" [nzValue]="p" [nzLabel]="p"></nz-option>
               </nz-select>
             </nz-form-control>
@@ -25,7 +30,13 @@
           <nz-form-item>
             <nz-form-label nzRequired>
               Integration Event JSON Payload
-              <button nz-button nzType="link" nzSize="small" (click)="formatPayload()" style="float: right;">
+              <button
+                nz-button
+                nzType="link"
+                nzSize="small"
+                (click)="formatPayload()"
+                style="float: right"
+              >
                 <span nz-icon nzType="format-painter"></span> Format
               </button>
             </nz-form-label>
@@ -38,8 +49,12 @@
                 placeholder='{ "sourceSystem": "HRM", "eventType": "hrm.employee.created", "payload": {} }'
               ></textarea>
               <div class="json-status">
-                <span *ngIf="isValidJson()" style="color: #52c41a;"><span nz-icon nzType="check-circle"></span> JSON hợp lệ</span>
-                <span *ngIf="!isValidJson()" style="color: #ff4d4f;"><span nz-icon nzType="close-circle"></span> JSON không hợp lệ</span>
+                <span *ngIf="isValidJson()" style="color: #52c41a"
+                  ><span nz-icon nzType="check-circle"></span> JSON hợp lệ</span
+                >
+                <span *ngIf="!isValidJson()" style="color: #ff4d4f"
+                  ><span nz-icon nzType="close-circle"></span> JSON không hợp lệ</span
+                >
               </div>
             </nz-form-control>
           </nz-form-item>
@@ -60,9 +75,12 @@
       </div>
     </div>
 
-    <!-- Right: Output -->
     <div class="output-panel">
-      <div class="panel-card" [class.result-success]="resultStatus === 'success'" [class.result-error]="resultStatus === 'error'">
+      <div
+        class="panel-card"
+        [class.result-success]="resultStatus === 'success'"
+        [class.result-error]="resultStatus === 'error'"
+      >
         <div class="panel-title-row">
           <h3 class="panel-title">Kết quả Phản Hồi</h3>
           <nz-tag *ngIf="resultStatus === 'success'" nzColor="success">✅ Thành công</nz-tag>
@@ -76,10 +94,13 @@
           ></nz-empty>
         </div>
 
-        <pre *ngIf="result" class="result-code" [class.result-code-error]="resultStatus === 'error'">{{ formatResult() }}</pre>
+        <pre
+          *ngIf="result"
+          class="result-code"
+          [class.result-code-error]="resultStatus === 'error'"
+          >{{ formatResult() }}</pre>
       </div>
 
-      <!-- Info box -->
       <div class="info-box">
         <h4><span nz-icon nzType="info-circle"></span> Cơ chế hoạt động</h4>
         <ul>
