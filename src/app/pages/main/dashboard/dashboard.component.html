@@ -1,101 +1,210 @@
-<div class="dashboard-container">
-  <div class="page-header">
-    <div class="title-group">
-      <h2>Trung Tâm Giám Sát & Điều Phối Tích Hợp (Integration Hub)</h2>
-      <p class="subtitle">
-        Theo dõi lưu lượng sự kiện, tỷ lệ đồng bộ, hiệu năng kết nối các đối tác bên thứ 3 trong
-        thời gian thực
+<div class="hub-dashboard">
+  <!-- Page Header -->
+  <div class="dashboard-header">
+    <div class="header-title-wrap">
+      <div class="header-badge">
+        <span class="pulse-dot"></span>
+        <span class="badge-text">INTEGRATION ORCHESTRATION HUB</span>
+      </div>
+      <h2 class="page-title">
+        <span nz-icon nzType="dashboard" nzTheme="outline" class="title-icon"></span>
+        <span>Trung Tâm Giám Sát & Điều Phối Tích Hợp</span>
+      </h2>
+      <p class="page-subtitle">
+        Theo dõi lưu lượng đồng bộ dữ liệu, phân luồng sự kiện đa nền tảng (ERP, CRM, Ecommerce) và tình trạng kết nối Adapter thời gian thực
       </p>
     </div>
-    <div class="action-group">
-      <button nz-button nzType="default" (click)="loadStats()" [nzLoading]="loading">
-        <span nz-icon nzType="reload"></span> Làm mới
-      </button>
-      <a nz-button nzType="primary" routerLink="/playground">
-        <span nz-icon nzType="experiment"></span> Test Playground
+    <div class="header-actions">
+      <div class="auto-refresh-toggle">
+        <span class="toggle-label">Tự động làm mới:</span>
+        <nz-switch [(ngModel)]="autoRefresh" nzSize="small"></nz-switch>
+      </div>
+      <a nz-button nzType="primary" routerLink="/playground" class="btn-playground">
+        <span nz-icon nzType="experiment" nzTheme="outline"></span>
+        Test Playground
       </a>
+      <button nz-button nzType="default" (click)="loadStats()" [nzLoading]="loading" class="btn-refresh">
+        <span nz-icon nzType="reload" nzTheme="outline"></span>
+        Làm mới
+      </button>
     </div>
   </div>
 
+  <!-- KPI Cards Grid -->
   <div class="kpi-grid">
-    <div class="kpi-card blue">
-      <div class="kpi-icon">
-        <span nz-icon nzType="send"></span>
+    <div class="kpi-card card-events">
+      <div class="kpi-icon-wrap">
+        <span nz-icon nzType="send" nzTheme="outline"></span>
       </div>
-      <div class="kpi-content">
-        <div class="kpi-label">Sự kiện hôm nay</div>
-        <div class="kpi-value">{{ stats?.totalEventsToday ?? 0 }}</div>
-        <div class="kpi-sub">Tháng này: {{ stats?.totalEventsThisMonth ?? 0 }}</div>
+      <div class="kpi-info">
+        <span class="kpi-label">Sự Kiện Hôm Nay</span>
+        <span class="kpi-value">{{ stats?.totalEventsToday || 0 | number }}</span>
+        <span class="kpi-subtext">
+          <span nz-icon nzType="calendar" nzTheme="outline"></span>
+          Tháng này: {{ stats?.totalEventsThisMonth || 0 | number }} sự kiện
+        </span>
+      </div>
+      <div class="kpi-badge badge-blue">Sync Pipeline</div>
+    </div>
+
+    <div class="kpi-card card-success">
+      <div class="kpi-icon-wrap">
+        <span nz-icon nzType="check-circle" nzTheme="outline"></span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Tỷ Lệ Thành Công</span>
+        <span class="kpi-value">{{ stats?.successRateToday ?? 100 }}%</span>
+        <span class="kpi-subtext">
+          <span nz-icon nzType="safety-certificate" nzTheme="outline"></span>
+          Đường truyền dữ liệu ổn định
+        </span>
+      </div>
+      <div class="kpi-badge badge-green">Reliable</div>
+    </div>
+
+    <div class="kpi-card card-retry">
+      <div class="kpi-icon-wrap">
+        <span nz-icon nzType="sync" nzTheme="outline"></span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Đang Chờ Retry</span>
+        <span class="kpi-value" [class.warning]="(stats?.pendingRetryCount || 0) > 0">
+          {{ stats?.pendingRetryCount || 0 }}
+        </span>
+        <span class="kpi-subtext">
+          <span nz-icon nzType="clock-circle" nzTheme="outline"></span>
+          Tự động xử lý qua hàng đợi
+        </span>
+      </div>
+      <div class="kpi-badge badge-amber">Auto Retry</div>
+    </div>
+
+    <div class="kpi-card card-adapters">
+      <div class="kpi-icon-wrap">
+        <span nz-icon nzType="api" nzTheme="outline"></span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Adapters & Mappings</span>
+        <span class="kpi-value">
+          {{ stats?.activeAdaptersCount || 0 }} <small>Adapters</small>
+        </span>
+        <span class="kpi-subtext">
+          <span nz-icon nzType="branches" nzTheme="outline"></span>
+          {{ stats?.activeMappingsCount || 0 }} mappings đang hoạt động
+        </span>
+      </div>
+      <div class="kpi-badge badge-purple">Active Core</div>
+    </div>
+  </div>
+
+  <!-- Charts Row 1: 7-Day Trend + Partner Doughnut -->
+  <div class="charts-row-1">
+    <div class="panel-card trend-panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span nz-icon nzType="line-chart" nzTheme="outline"></span>
+          <span>Xu Hướng Đồng Bộ Dữ Liệu (7 Ngày Qua)</span>
+        </div>
+        <span class="panel-tag">Thành công vs Thất bại</span>
+      </div>
+      <div class="panel-body">
+        @if (hasTrendData && trendChartOption) {
+          <div echarts [options]="trendChartOption" class="echarts-chart" style="height: 310px;"></div>
+        } @else {
+          <div class="empty-chart-box">
+            <nz-empty nzNotFoundImage="simple" nzNotFoundContent="Chưa có sự kiện đồng bộ nào được ghi nhận trong 7 ngày qua"></nz-empty>
+          </div>
+        }
       </div>
     </div>
 
-    <div class="kpi-card green">
-      <div class="kpi-icon">
-        <span nz-icon nzType="check-circle"></span>
+    <div class="panel-card provider-panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span nz-icon nzType="pie-chart" nzTheme="outline"></span>
+          <span>Phân Bổ Theo Đối Tác (Provider)</span>
+        </div>
+        <span class="panel-tag">7 ngày</span>
       </div>
-      <div class="kpi-content">
-        <div class="kpi-label">Tỷ lệ thành công</div>
-        <div class="kpi-value">{{ stats?.successRateToday ?? 100 }}%</div>
-        <div class="kpi-sub">Đồng bộ ổn định</div>
-      </div>
-    </div>
-
-    <div class="kpi-card orange">
-      <div class="kpi-icon">
-        <span nz-icon nzType="sync"></span>
-      </div>
-      <div class="kpi-content">
-        <div class="kpi-label">Đang chờ Retry</div>
-        <div class="kpi-value">{{ stats?.pendingRetryCount ?? 0 }}</div>
-        <div class="kpi-sub">Tự động xử lý nền</div>
-      </div>
-    </div>
-
-    <div class="kpi-card purple">
-      <div class="kpi-icon">
-        <span nz-icon nzType="api"></span>
-      </div>
-      <div class="kpi-content">
-        <div class="kpi-label">Adapters khả dụng</div>
-        <div class="kpi-value">{{ stats?.activeAdaptersCount ?? 6 }}</div>
-        <div class="kpi-sub">{{ stats?.activeMappingsCount ?? 0 }} mappings đang bật</div>
+      <div class="panel-body">
+        @if (hasProviderData && providerChartOption) {
+          <div echarts [options]="providerChartOption" class="echarts-chart" style="height: 310px;"></div>
+        } @else {
+          <div class="empty-chart-box">
+            <nz-empty nzNotFoundImage="simple" nzNotFoundContent="Chưa có sự kiện từ đối tác"></nz-empty>
+          </div>
+        }
       </div>
     </div>
   </div>
 
-  <div class="charts-grid-main">
-    <div class="chart-panel">
+  <!-- Charts Row 2: Source Systems + Event Status Breakdown -->
+  <div class="charts-row-2">
+    <div class="panel-card source-panel">
       <div class="panel-header">
-        <span class="panel-title"
-          ><span nz-icon nzType="line-chart"></span> Xu hướng đồng bộ 7 ngày qua</span
-        >
+        <div class="panel-title">
+          <span nz-icon nzType="bar-chart" nzTheme="outline"></span>
+          <span>Phân Bổ Theo Hệ Thống Nguồn (ERP / Source Modules)</span>
+        </div>
+        <span class="panel-tag">7 ngày</span>
       </div>
       <div class="panel-body">
-        <div echarts [options]="trendChartOption" class="echarts-box"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="charts-grid-secondary">
-    <div class="chart-panel">
-      <div class="panel-header">
-        <span class="panel-title"
-          ><span nz-icon nzType="pie-chart"></span> Phân bổ theo Đối tác (Provider)</span
-        >
-      </div>
-      <div class="panel-body">
-        <div echarts [options]="providerChartOption" class="echarts-box"></div>
+        @if (hasSourceData && sourceChartOption) {
+          <div echarts [options]="sourceChartOption" class="echarts-chart" style="height: 280px;"></div>
+        } @else {
+          <div class="empty-chart-box">
+            <nz-empty nzNotFoundImage="simple" nzNotFoundContent="Chưa có lưu lượng từ hệ thống nguồn"></nz-empty>
+          </div>
+        }
       </div>
     </div>
 
-    <div class="chart-panel">
+    <div class="panel-card status-panel">
       <div class="panel-header">
-        <span class="panel-title"
-          ><span nz-icon nzType="bar-chart"></span> Phân bổ theo Hệ thống nguồn (ERP Modules)</span
-        >
+        <div class="panel-title">
+          <span nz-icon nzType="check-square" nzTheme="outline"></span>
+          <span>Trạng Thái Sự Kiện Hôm Nay</span>
+        </div>
       </div>
       <div class="panel-body">
-        <div echarts [options]="sourceChartOption" class="echarts-box"></div>
+        @if (stats?.eventsByStatus && stats!.eventsByStatus.length > 0) {
+          <div class="status-breakdown-list">
+            @for (st of stats?.eventsByStatus; track st.name) {
+              <div class="status-item">
+                <div class="status-item-header">
+                  <span class="status-name">{{ st.name }}</span>
+                  <span class="status-val font-semibold">{{ st.value }}</span>
+                </div>
+                <nz-progress
+                  [nzPercent]="(stats?.totalEventsToday || 0) > 0 ? (st.value / stats!.totalEventsToday * 100) : 0"
+                  [nzStrokeColor]="st.name === 'Success' ? '#10b981' : st.name === 'Failed' ? '#ef4444' : '#f59e0b'"
+                  [nzShowInfo]="false"
+                  nzSize="small"
+                ></nz-progress>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="status-empty-box">
+            <span nz-icon nzType="check-circle" nzTheme="outline" class="check-icon"></span>
+            <span class="empty-text">Hôm nay chưa phát sinh sự kiện đồng bộ mới</span>
+          </div>
+        }
+
+        <div class="quick-links-box">
+          <a routerLink="/adapters" class="quick-link-btn">
+            <span nz-icon nzType="api" nzTheme="outline"></span>
+            <span>Cấu hình Adapters</span>
+          </a>
+          <a routerLink="/mappings" class="quick-link-btn">
+            <span nz-icon nzType="partition" nzTheme="outline"></span>
+            <span>Sơ đồ Mappings</span>
+          </a>
+          <a routerLink="/logs" class="quick-link-btn">
+            <span nz-icon nzType="history" nzTheme="outline"></span>
+            <span>Nhật ký Sync Logs</span>
+          </a>
+        </div>
       </div>
     </div>
   </div>
